@@ -12,6 +12,7 @@ import Link from "next/link";
 import { handleform } from "./actions";
 import { useFormState } from "react-dom";
 import FormInput from "./components/form";
+import "@/lib/db";
 
 export default function Home() {
   const [state, action] = useFormState(handleform, null);
