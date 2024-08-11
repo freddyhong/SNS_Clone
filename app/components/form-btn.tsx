@@ -2,7 +2,11 @@
 
 import { useFormStatus } from "react-dom";
 
-export default function FormBtn() {
+interface IFormBtn {
+  text: string;
+}
+
+export default function FormBtn({ text }: IFormBtn) {
   const { pending } = useFormStatus();
   console.log(pending);
   return (
@@ -10,7 +14,7 @@ export default function FormBtn() {
       disabled={pending}
       className=" disabled:bg-neutral-200 disabled:cursor-not-allowed  w-96 py-3 text-center rounded-full bg-red-200 font-medium hover:bg-red-300 transition-all active:w-[23rem]"
     >
-      {pending ? "loading..." : "Log in"}
+      {pending ? "loading..." : text}
     </button>
   );
 }

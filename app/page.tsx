@@ -30,7 +30,7 @@ export default function Home() {
             errors={state?.fieldErrors?.email}
           />
         </div>
-        <div className="relative w-full">
+        {/* <div className="relative w-full">
           <FormInput
             name="username"
             type="text"
@@ -38,7 +38,7 @@ export default function Home() {
             required
             errors={state?.fieldErrors?.username}
           />
-        </div>
+        </div> */}
         <div className="relative w-full">
           <FormInput
             name="password"
@@ -49,12 +49,25 @@ export default function Home() {
           />
         </div>
 
-        <FormBtn />
-        {state?.logined && (
+        <FormBtn text="Log In" />
+        <div className="w-full">
+          <span>
+            Don't have an account? &nbsp;
+            <Link
+              className="text-red-300 hover:underline hover:underline-offset-2 hover:text-red-400 transition-all"
+              href="/create-account"
+            >
+              Create Account
+            </Link>
+          </span>
+        </div>
+
+        {/* {state?.logined && (
           <span className=" flex w-96 py-3 px-5 gap-3 text-center rounded-full bg-green-400 font-medium text-white">
             <CheckBadgeIcon className=" h-6 w-6 " /> Welcome Back
           </span>
         )}
+         */}
       </form>
     </div>
   );
