@@ -6,13 +6,12 @@ import {
   KeyIcon,
   UserIcon,
 } from "@heroicons/react/16/solid";
-import { EnvelopeIcon } from "@heroicons/react/20/solid";
-import FormBtn from "./components/form-btn";
 import Link from "next/link";
 import { handleform } from "./actions";
 import { useFormState } from "react-dom";
-import FormInput from "./components/form";
 import "@/lib/db";
+import FormInput from "@/app/components/form";
+import FormBtn from "@/app/components/form-btn";
 
 export default function Home() {
   const [state, action] = useFormState(handleform, null);
@@ -30,15 +29,6 @@ export default function Home() {
             errors={state?.fieldErrors?.email}
           />
         </div>
-        {/* <div className="relative w-full">
-          <FormInput
-            name="username"
-            type="text"
-            placeholder="Username"
-            required
-            errors={state?.fieldErrors?.username}
-          />
-        </div> */}
         <div className="relative w-full">
           <FormInput
             name="password"
@@ -61,13 +51,6 @@ export default function Home() {
             </Link>
           </span>
         </div>
-
-        {/* {state?.logined && (
-          <span className=" flex w-96 py-3 px-5 gap-3 text-center rounded-full bg-green-400 font-medium text-white">
-            <CheckBadgeIcon className=" h-6 w-6 " /> Welcome Back
-          </span>
-        )}
-         */}
       </form>
     </div>
   );

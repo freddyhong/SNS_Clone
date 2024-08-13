@@ -1,7 +1,7 @@
 import db from "@/lib/db";
 import getSession from "@/lib/session";
 import { notFound, redirect } from "next/navigation";
-import FormBtn from "../components/form-btn";
+import FormBtn from "../../components/form-btn";
 
 async function getUser() {
   const session = await getSession();
@@ -24,7 +24,7 @@ export default async function profile() {
     "use server";
     const session = await getSession();
     await session.destroy();
-    redirect("/");
+    redirect("/login");
   };
   return (
     <div className="flex flex-col gap-10 py-8 px-6 mx-auto min-h-screen items-center mt-36">

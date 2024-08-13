@@ -1,9 +1,10 @@
 "use client";
 import { useFormState } from "react-dom";
-import FormBtn from "../components/form-btn";
-import FormInput from "../components/form";
+
 import Link from "next/link";
 import { createAccount } from "./action";
+import FormInput from "@/app/components/form";
+import FormBtn from "@/app/components/form-btn";
 
 export default function Create_Account() {
   const [state, dispatch] = useFormState(createAccount, null);
