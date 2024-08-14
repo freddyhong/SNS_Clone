@@ -3,6 +3,7 @@ import Link from "next/link";
 import getTweets, { Tweets } from "./actions";
 import { useEffect, useState } from "react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/20/solid";
+import AddTweet from "../components/tweet-form";
 
 export default function Home() {
   const [page, setPage] = useState(0);
@@ -16,6 +17,7 @@ export default function Home() {
   }, [page]);
   return (
     <div className="flex flex-col gap-10 py-8 px-6 mx-auto min-h-screen items-center mt-36">
+      <AddTweet />
       <div className="flex gap-7">
         <ArrowLeftIcon
           className="cursor-pointer h-6 w-h-6 items-center"
