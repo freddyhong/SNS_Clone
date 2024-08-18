@@ -8,13 +8,13 @@ export default function AddTweet() {
   const [state, dispatch] = useFormState(addTweet, null);
   console.log(state);
   return (
-    <form className="w-full flex gap-5 flex-col" action={dispatch}>
+    <form className="w-full flex gap-5 flex-col " action={dispatch}>
       <FormInput
         type="text"
         name="tweet"
         placeholder="Add tweets..."
         required
-        errors={state?.formErrors}
+        errors={state?.formErrors!}
       />
       <FormBtn text="Add Tweet" />
     </form>

@@ -8,31 +8,45 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  username   String   @unique
-  email      String   @unique
+  id         Int       @id @default(autoincrement())
+  username   String    @unique
+  email      String    @unique
   password   String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
   Tweet      Tweet[]
   Like       Like[]
+  Comment    Comment[]
 }
 
 model Tweet {
-  id         Int      @id @default(autoincrement())
+  id         Int       @id @default(autoincrement())
   tweet      String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  user       User     @relation(fields: [userId], references: [id])
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
   Like       Like[]
+  Comment    Comment[]
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  comment    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tweet      Tweet    @relation(fields: [tweetId], references: [id], onDelete: Cascade)
+  tweetId    Int
 }
 
 model Like {
-  id         Int      @id @default(autoincrement())
   created_at DateTime @default(now())
-  tweet      Tweet    @relation(fields: [tweetId], references: [id])
+  tweet      Tweet    @relation(fields: [tweetId], references: [id], onDelete: Cascade)
   tweetId    Int
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
+
+  @@id(name: "id", [userId, tweetId])
 }

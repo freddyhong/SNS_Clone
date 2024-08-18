@@ -14,7 +14,7 @@ export default function FormInput({
   name,
 }: IFormInput) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1 w-full">
       <input
         className="main_input"
         type={type}

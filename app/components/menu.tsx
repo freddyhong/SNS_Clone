@@ -20,7 +20,7 @@ import { usePathname } from "next/navigation";
 export default function MenuBar() {
   const pathname = usePathname();
   return (
-    <div className="fixed bottom-0 max-w-screen-md w-96 grid grid-cols-2 border-neutral-600 border-t *:text-black py-6">
+    <div className="fixed bottom-0 max-w-screen-md w-[31rem] grid grid-cols-2 border-neutral-600 border-t *:text-black py-6">
       <Link href="/" className="flex flex-col items-center gap-px">
         {pathname === "/" ? (
           <SolidHomeIcon className="w-7 h-7" />

@@ -15,6 +15,7 @@ export default function Home() {
       setTotal(total);
     });
   }, [page]);
+
   return (
     <div className="flex flex-col gap-10 py-8 px-6 mx-auto min-h-screen items-center mt-36">
       <AddTweet />
