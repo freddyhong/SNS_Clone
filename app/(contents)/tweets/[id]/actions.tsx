@@ -1,40 +1,85 @@
+"use server";
+
 import db from "@/lib/db";
 import getSession from "@/lib/session";
-import { revalidateTag, unstable_cache } from "next/cache";
-import { notFound } from "next/navigation";
+import { z } from "zod";
+import { notFound, redirect } from "next/navigation";
+import { revalidateTag, revalidatePath } from "next/cache";
 
-export default async function getComment(id: number) {
-  return db.tweet.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      Comment: {
-        select: {
-          id: true,
-          comment: true,
-          user: true,
+export async function likeTweet(tweetId: number) {
+  const session = await getSession();
+  try {
+    await db.like.create({
+      data: {
+        tweetId,
+        userId: session.id!,
+      },
+    });
+    revalidateTag(`like-status-${tweetId}`);
+  } catch (e) {}
+}
+
+export async function dislikeTweet(tweetId: number) {
+  try {
+    const session = await getSession();
+    await db.like.delete({
+      where: {
+        id: {
+          tweetId,
+          userId: session.id!,
         },
       },
-    },
-  });
+    });
+    revalidateTag(`like-status-${tweetId}`);
+  } catch (e) {}
 }
 
-export async function getTweet(id: number) {
-  return db.tweet.findUnique({
-    where: { id },
-  });
-}
+const responseSchema = z.object({
+  response: z
+    .string()
+    .min(5, "Tweet should be at least 5 characters long.")
+    .max(100, "The character limit has been exceeded."),
+});
 
-export async function getUser(params: number | undefined) {
-  const user = await db.user.findUnique({
-    where: {
-      id: params,
-    },
-  });
-  if (user) {
-    return user.username;
+export async function addComment(
+  prevState: any,
+  { formData, tweetId }: { formData: FormData; tweetId: number }
+) {
+  const data = {
+    response: formData.get("comment"),
+  };
+  const result = await responseSchema.safeParse(data);
+
+  if (!result.success) {
+    return result.error.flatten();
   } else {
-    notFound();
+    const session = await getSession();
+    if (session.id) {
+      await db.comment.create({
+        data: {
+          comment: result.data.response,
+          user: {
+            connect: {
+              id: session.id,
+            },
+          },
+          tweet: {
+            connect: {
+              id: tweetId,
+            },
+          },
+        },
+      });
+      revalidatePath(`/tweets/${tweetId}`);
+    }
   }
+}
+
+export async function deleteTweet(tweetId: number) {
+  await db.tweet.delete({
+    where: {
+      id: tweetId,
+    },
+  });
+  redirect("/");
 }

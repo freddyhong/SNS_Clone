@@ -4,37 +4,47 @@ import { MdThumbUp, MdOutlineThumbUp } from "react-icons/md";
 import { startTransition, useOptimistic } from "react";
 import React from "react";
 import { dislikeTweet, likeTweet } from "../(contents)/actions";
-
-interface Props {
-  count: number;
+interface LikeTweetProps {
   isLiked: boolean;
+  likeCount: number;
   tweetId: number;
 }
-export default function LikeBtn({ count, isLiked, tweetId }: Props) {
+
+export default function LikeTweet({
+  isLiked,
+  likeCount,
+  tweetId,
+}: LikeTweetProps) {
   const [state, reducerFn] = useOptimistic(
-    { isLiked, count },
-    (prev, _payload) => ({
-      isLiked: !prev.isLiked,
-      count: prev.isLiked ? prev.count - 1 : prev.count + 1,
+    { isLiked, likeCount },
+    (previousState, payload) => ({
+      isLiked: !previousState.isLiked,
+      likeCount: previousState.isLiked
+        ? previousState.likeCount - 1
+        : previousState.likeCount + 1,
     })
   );
-  const onClick = async () => {
-    startTransition(() => {
-      reducerFn(undefined);
-    });
-    state.isLiked ? await dislikeTweet(tweetId) : await likeTweet(tweetId);
+
+  const action = async () => {
+    reducerFn(undefined);
+    if (isLiked) {
+      await dislikeTweet(tweetId);
+    } else {
+      await likeTweet(tweetId);
+    }
   };
 
   return (
-    <div
-      key={tweetId}
-      className={`${
-        state.isLiked ? "bg-orange-300" : ""
-      } w-24 flex justify-center items-center cursor-pointer border-black border-2 gap-2`}
-      onClick={onClick}
-    >
-      {state.isLiked ? <MdThumbUp /> : <MdOutlineThumbUp />}
-      <p>{state.count}</p>
-    </div>
+    <form action={action}>
+      <button
+        className={`${
+          state.isLiked
+            ? "bg-red-400 ring-2 ring-red-400 text-white"
+            : "text-neutral-400 hover:ring-2 hover:ring-red-400"
+        } flex items-center gap-2 text-sm rounded-full p-2 transition-colors`}
+      >
+        <span>{`좋아요 (${state.likeCount})`}</span>
+      </button>
+    </form>
   );
 }

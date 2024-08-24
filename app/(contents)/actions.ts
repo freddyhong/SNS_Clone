@@ -3,36 +3,141 @@ import db from "@/lib/db";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import getSession from "@/lib/session";
-import { useParams } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { stringify } from "querystring";
-import { revalidateTag, unstable_cache } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 
-export default async function getTweets(page: number) {
-  const tweets = await db.tweet.findMany({
-    skip: page * 1,
-    take: 1,
+const tweetSchema = z.object({
+  tweet: z
+    .string()
+    .min(5, "Tweet should be at least 5 characters long.")
+    .max(100, "The character limit has been exceeded."),
+});
+
+const searhSchema = z.object({
+  keyword: z.string({
+    required_error: "Type a keyword to search for...",
+  }),
+});
+
+export async function validateSearchKeyword(_: any, formData: FormData) {
+  const data = {
+    keyword: formData.get("keyword"),
+  };
+  const result = await searhSchema.safeParseAsync(data);
+
+  if (!result.success) {
+    return result.error.flatten();
+  } else {
+    const encodedKeyword = encodeURI(result.data.keyword);
+    revalidatePath(`/search?keyword=${encodedKeyword}`);
+    redirect(`/search?keyword=${encodedKeyword}`);
+  }
+}
+
+export async function addTweet(prevState: any, formData: FormData) {
+  const data = {
+    tweet: formData.get("tweet"),
+  };
+  const result = await tweetSchema.safeParse(data);
+
+  if (!result.success) {
+    return result.error.flatten();
+  } else {
+    const session = await getSession();
+    if (session.id) {
+      const tweet = await db.tweet.create({
+        data: {
+          tweet: result.data.tweet,
+          user: {
+            connect: {
+              id: session.id,
+            },
+          },
+        },
+      });
+      redirect(`tweets/${tweet.id}`);
+    }
+  }
+}
+
+export async function getNextTweets(cursorId: number) {
+  const nextTweets = await db.tweet.findMany({
+    select: {
+      id: true,
+      tweet: true,
+      created_at: true,
+      user: {
+        select: {
+          username: true,
+        },
+      },
+      _count: {
+        select: {
+          Like: true,
+          Comment: true,
+        },
+      },
+    },
+    cursor: { id: cursorId },
+    skip: cursorId ? 1 : 0,
+    take: 3,
     orderBy: {
       created_at: "desc",
     },
   });
-  const total = await db.tweet.count();
-
-  return { tweets, total };
+  return nextTweets;
 }
 
-export async function getComments(tweetId: number) {
-  const comments = await db.comment.findMany({
-    where: {
-      tweetId: tweetId,
+export async function getPrevTweets(cursorId: number, tweetslength: number) {
+  const prevTweets = await db.tweet.findMany({
+    select: {
+      id: true,
+      tweet: true,
+      created_at: true,
+      user: {
+        select: {
+          username: true,
+        },
+      },
+      _count: {
+        select: {
+          Like: true,
+          Comment: true,
+        },
+      },
+    },
+    cursor: { id: cursorId },
+    skip: tweetslength,
+    take: -3,
+    orderBy: {
+      created_at: "desc",
     },
   });
-  return { comments };
+  return prevTweets;
 }
 
-export type Tweets = Prisma.PromiseReturnType<typeof getTweets>["tweets"];
-export type CommentType = Prisma.PromiseReturnType<
-  typeof getComments
->["comments"];
+async function getComments(id: number) {
+  const responses = await db.comment.findMany({
+    where: {
+      tweetId: id,
+    },
+    select: {
+      id: true,
+      comment: true,
+      user: {
+        select: {
+          username: true,
+        },
+      },
+    },
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+  return responses;
+}
+const getCachedResponses = unstable_cache(getComments, ["response-list"]);
 
 export const getCommentsCached = unstable_cache(getComments, ["get-comments"], {
   tags: ["get-comments"],
@@ -56,66 +161,41 @@ export const getLikesCached = (tweetId: number, userId: number) =>
     tags: [`get-likes-${tweetId}`],
   })(tweetId, userId);
 
-export async function addTweet(prevState: any, formData: FormData) {
-  const formSchema = z
-    .string()
-    .refine((t) => !t.includes("wrong"), "remove keyword: 'wrong'");
-  const data = formData.get("tweet");
-  const { success, error, data: tweet } = formSchema.safeParse(data);
-
-  if (!success || !tweet) {
-    return error?.flatten();
-  }
-
-  const session = await getSession();
-  const userId = session.id;
-
-  if (!userId) {
-    return {
-      formErrors: ["You must be logged in to tweet."],
-    };
-  }
-
-  await db.tweet.create({
-    data: {
-      tweet,
-      userId,
-    },
-  });
-}
-
 export async function addComment(
   prevState: any,
-  formData: FormData,
-  tweetId: number
+  { formData, tweetId }: { formData: FormData; tweetId: number }
 ) {
+  const data = {
+    response: formData.get("comment"),
+  };
   const formSchema = z
     .string()
     .refine((t) => !t.includes("wrong"), "remove keyword: 'wrong'");
-  const data = formData.get("comment");
-  const { success, error, data: comment } = formSchema.safeParse(data);
+  const result = await formSchema.safeParse(data);
 
-  if (!success || !comment) {
-    return error?.flatten();
+  if (!result.success) {
+    return result.error.flatten();
+  } else {
+    const session = await getSession();
+    if (session.id) {
+      await db.comment.create({
+        data: {
+          comment: result.data,
+          user: {
+            connect: {
+              id: session.id,
+            },
+          },
+          tweet: {
+            connect: {
+              id: tweetId,
+            },
+          },
+        },
+      });
+      revalidatePath(`/tweets/${tweetId}`);
+    }
   }
-
-  const session = await getSession();
-  const userId = session.id;
-
-  if (!userId) {
-    return {
-      formErrors: ["You must be logged in to tweet."],
-    };
-  }
-
-  await db.comment.create({
-    data: {
-      comment,
-      userId,
-      tweetId,
-    },
-  });
-  revalidateTag("get-comments");
 }
 
 export async function likeTweet(tweetId: number) {

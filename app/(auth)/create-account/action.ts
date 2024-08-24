@@ -39,7 +39,7 @@ const checkUniqueEmail = async (email: string) => {
   return Boolean(user) === false;
 };
 
-const formSchema = z
+export const formSchema = z
   .object({
     username: z
       .string({
