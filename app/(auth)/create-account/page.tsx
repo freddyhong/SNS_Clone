@@ -17,7 +17,7 @@ export default function Create_Account() {
             type="email"
             placeholder="Email"
             required
-            errors={state?.fieldErrors?.email}
+            errors={state?.fieldErrors?.email!}
           />
         </div>
         <div className="relative w-full">
@@ -26,7 +26,7 @@ export default function Create_Account() {
             type="text"
             placeholder="Username"
             required
-            errors={state?.fieldErrors?.username}
+            errors={state?.fieldErrors?.username!}
           />
         </div>
         <div className="relative w-full">
@@ -35,7 +35,7 @@ export default function Create_Account() {
             type="password"
             placeholder="Password"
             required
-            errors={state?.fieldErrors?.password}
+            errors={state?.fieldErrors?.password!}
           />
         </div>
         <div className="relative w-full">
@@ -44,7 +44,7 @@ export default function Create_Account() {
             type="password"
             placeholder="Confirm Password"
             required
-            errors={state?.fieldErrors?.confirm_password}
+            errors={state?.fieldErrors?.confirm_password!}
           />
         </div>
 

@@ -26,7 +26,7 @@ export default function Home() {
             type="email"
             placeholder="Email"
             required
-            errors={state?.fieldErrors?.email}
+            errors={state?.fieldErrors?.email!}
           />
         </div>
         <div className="relative w-full">
@@ -35,7 +35,7 @@ export default function Home() {
             type="password"
             placeholder="Password"
             required
-            errors={state?.fieldErrors?.password}
+            errors={state?.fieldErrors?.password!}
           />
         </div>
 
