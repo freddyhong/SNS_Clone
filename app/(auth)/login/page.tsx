@@ -14,6 +14,7 @@ import FormInput from "@/app/components/form";
 import FormBtn from "@/app/components/form-btn";
 
 export default function Home() {
+  // @ts-ignore
   const [state, action] = useFormState(handleform, null);
   console.log(state);
   return (
