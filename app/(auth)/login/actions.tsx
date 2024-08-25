@@ -16,7 +16,6 @@ const checkEmailExists = async (email: string) => {
 };
 
 const formSchema = z.object({
-  //username: z.string().min(5, "Username should be at least 5 characters long"),
   email: z
     .string()
     .email()
@@ -24,23 +23,21 @@ const formSchema = z.object({
       checkEmailExists,
       "An account with this email does not exist. Please create an account first."
     ),
-  //.endsWith("zod.com", "Only @zod.com emails are allowed"),
+
   password: z
     .string()
     .min(10, "Password should be at least 10 characters long")
     .regex(passwordRegex, "Password should contain at least on number"),
-
-  username: z.string(),
 });
 
 export async function handleform(prevState: string, formData: FormData) {
   const data = {
-    //username: formData.get("username"),
     email: formData.get("email"),
     password: formData.get("password"),
-    username: formData.get("username"),
   };
+  console.log(data);
   const result = await formSchema.safeParseAsync(data);
+  console.log(result);
   if (!result.success) {
     return result.error.flatten();
   } else {
