@@ -8,7 +8,6 @@ interface IFormBtn {
 
 export default function FormBtn({ text }: IFormBtn) {
   const { pending } = useFormStatus();
-  console.log(pending);
   return (
     <button
       disabled={pending}

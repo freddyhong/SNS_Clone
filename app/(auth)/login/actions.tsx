@@ -41,7 +41,6 @@ export async function handleform(prevState: string, formData: FormData) {
     username: formData.get("username"),
   };
   const result = await formSchema.safeParseAsync(data);
-  //console.log(result.success);
   if (!result.success) {
     return result.error.flatten();
   } else {

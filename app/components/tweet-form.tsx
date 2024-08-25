@@ -6,7 +6,6 @@ import { useFormState } from "react-dom";
 
 export default function AddTweet() {
   const [state, dispatch] = useFormState(addTweet, null);
-  console.log(state);
   return (
     <form className="w-full flex gap-5 flex-col " action={dispatch}>
       <FormInput

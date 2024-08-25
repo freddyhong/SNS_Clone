@@ -16,7 +16,7 @@ import FormBtn from "@/app/components/form-btn";
 export default function Home() {
   // @ts-ignore
   const [state, action] = useFormState(handleform, null);
-  console.log(state);
+
   return (
     <div className="flex flex-col gap-10 py-8 px-6 mx-auto min-h-screen items-center mt-36">
       <FireIcon className="text-red-300 h-14 w-14" />

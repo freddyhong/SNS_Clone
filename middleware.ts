@@ -12,7 +12,6 @@ const publicOnlyUrls: Routes = {
 
 export async function middleware(request: NextRequest) {
   const session = await getSession();
-  console.log(session);
   const exists = publicOnlyUrls[request.nextUrl.pathname];
   if (!session.id && !exists) {
     return Response.redirect(new URL("/login", request.url));
