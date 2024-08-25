@@ -9,9 +9,9 @@ import {
 import Link from "next/link";
 import { handleform } from "./actions";
 import { useFormState } from "react-dom";
-import "@/lib/db";
-import FormInput from "@/app/components/form";
-import FormBtn from "@/app/components/form-btn";
+import "../../../lib/db";
+import FormInput from "../../components/form";
+import FormBtn from "../../components/form-btn";
 
 export default function Home() {
   // @ts-ignore

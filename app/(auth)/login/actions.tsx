@@ -1,8 +1,8 @@
 "use server";
-import db from "@/lib/db";
+import db from "../../../lib/db";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import getSession from "@/lib/session";
+import getSession from "../../../lib/session";
 import { redirect } from "next/navigation";
 
 const passwordRegex = new RegExp(/^(?=.*\d).+$/);

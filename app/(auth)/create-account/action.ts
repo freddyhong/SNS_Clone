@@ -1,11 +1,8 @@
 "use server";
-import db from "@/lib/db";
+import db from "../../../lib/db";
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { getIronSession } from "iron-session";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import getSession from "@/lib/session";
 
 const checkPasswords = ({
   password,
