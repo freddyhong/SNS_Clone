@@ -42,7 +42,7 @@ export default function Home() {
         <FormBtn text="Log In" />
         <div className="w-full">
           <span>
-            Don't have an account?{" "}
+            {`Don't have an account?`}{" "}
             <Link
               className="text-red-300 hover:underline hover:underline-offset-2 hover:text-red-400 transition-all"
               href="/create-account"
