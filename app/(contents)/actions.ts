@@ -139,9 +139,10 @@ async function getComments(id: number) {
 }
 const getCachedResponses = unstable_cache(getComments, ["response-list"]);
 
-export const getCommentsCached = unstable_cache(getComments, ["get-comments"], {
-  tags: ["get-comments"],
-});
+export const getCommentsCached = async () =>
+  unstable_cache(getComments, ["get-comments"], {
+    tags: ["get-comments"],
+  });
 
 export async function getLikes(tweetId: number, userId: number) {
   const count = await db.like.count({ where: { tweetId } });
@@ -156,7 +157,7 @@ export async function getLikes(tweetId: number, userId: number) {
   return { count, isLiked: Boolean(isLiked) };
 }
 
-export const getLikesCached = (tweetId: number, userId: number) =>
+export const getLikesCached = async (tweetId: number, userId: number) =>
   unstable_cache(getLikes, [`get-likes`], {
     tags: [`get-likes-${tweetId}`],
   })(tweetId, userId);

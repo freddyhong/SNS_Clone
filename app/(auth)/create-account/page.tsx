@@ -1,8 +1,6 @@
 "use client";
 import { useFormState } from "react-dom";
-
-import Link from "next/link";
-import { createAccount } from "./action";
+import createAccount from "./action";
 import FormInput from "@/app/components/form";
 import FormBtn from "@/app/components/form-btn";
 

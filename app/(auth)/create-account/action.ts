@@ -4,7 +4,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 
-const checkPasswords = ({
+const checkPasswords = async ({
   password,
   confirm_password,
 }: {
@@ -36,7 +36,7 @@ const checkUniqueEmail = async (email: string) => {
   return Boolean(user) === false;
 };
 
-export const formSchema = z
+const formSchema = z
   .object({
     username: z
       .string({
@@ -62,13 +62,17 @@ export const formSchema = z
     path: ["confirm_password"],
   });
 
-export async function createAccount(prevState: any, formData: FormData) {
+export default async function createAccount(
+  prevState: any,
+  formData: FormData
+) {
   const data = {
     username: formData.get("username"),
     email: formData.get("email"),
     password: formData.get("password"),
     confirm_password: formData.get("confirm_password"),
   };
+
   const result = await formSchema.safeParseAsync(data);
   if (!result.success) {
     return result.error.flatten();
@@ -84,11 +88,6 @@ export async function createAccount(prevState: any, formData: FormData) {
         id: true,
       },
     });
-    // const session = await getSession();
-    // session.id = user.id;
-    // await session.save();
     redirect("../");
-    // log the user in
-    // redirect "/home"
   }
 }

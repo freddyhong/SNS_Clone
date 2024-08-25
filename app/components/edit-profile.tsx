@@ -4,7 +4,6 @@ import React from "react";
 import Image from "next/image";
 import { UserInfo } from "../(contents)/profile/[username]/edit/page";
 import { useState } from "react";
-import { formSchema } from "../(auth)/create-account/action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import FormInput from "./form";
@@ -13,6 +12,64 @@ import db from "../../lib/db";
 import FormBtn from "./form-btn";
 import { useFormState } from "react-dom";
 import { handleform } from "../(auth)/login/actions";
+
+const checkPasswords = async ({
+  password,
+  confirm_password,
+}: {
+  password: string;
+  confirm_password: string;
+}) => password === confirm_password;
+
+const checkUniqueUsername = async (username: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      username,
+    },
+    select: {
+      id: true,
+    },
+  });
+  return !Boolean(user);
+};
+
+const checkUniqueEmail = async (email: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+    },
+  });
+  return Boolean(user) === false;
+};
+
+const formSchema = z
+  .object({
+    username: z
+      .string({
+        invalid_type_error: "Username must be a string!",
+        required_error: "Please enter your username",
+      })
+      .toLowerCase()
+      .trim()
+      .refine(checkUniqueUsername, "This username is already taken"),
+    email: z
+      .string()
+      .email()
+      .toLowerCase()
+      .refine(
+        checkUniqueEmail,
+        "There is an account already registered with this email."
+      ),
+    password: z.string().min(8),
+    confirm_password: z.string().min(8),
+  })
+  .refine(checkPasswords, {
+    message: "Both passwords should be the same!",
+    path: ["confirm_password"],
+  });
 
 interface FormEditProfileProps {
   userInfo: UserInfo;
