@@ -11,6 +11,8 @@ import FormInput from "./form";
 import { z } from "zod";
 import db from "../../lib/db";
 import FormBtn from "./form-btn";
+import { useFormState } from "react-dom";
+import { handleform } from "../(auth)/login/actions";
 
 interface FormEditProfileProps {
   userInfo: UserInfo;
@@ -49,48 +51,51 @@ export default function FormEditProfile({ userInfo }: FormEditProfileProps) {
     formData.append("password", data.password);
     formData.append("newPassword", data.newPassword);
     formData.append("confirmNewPassword", data.confirmNewPassword);
-    setError("password", { message: errors?.fieldErrors.password?.at(0) });
   });
 
   const onValid = async () => {
     await onSubmit();
   };
+  // @ts-ignore
+  const [state, action] = useFormState(handleform, null);
 
   return (
     <form action={onValid} className="flex flex-col gap-3 md:px-5">
       <FormInput
-        placeholder={userInfo?.username}
+        placeholder={userInfo?.username!}
         type="text"
         required
         {...register("username")}
-        error={errors?.username?.message}
+        errors={state?.fieldErrors.username!}
       />
       <FormInput
-        placeholder={userInfo?.email}
+        placeholder={userInfo?.email!}
         type="email"
         required
         {...register("email")}
-        error={errors?.email?.message}
+        errors={state?.fieldErrors.email!}
       />
       <FormInput
         placeholder="정보 수정을 위해 기존 비밀번호를 입력해주세요"
         type="password"
         required
         {...register("password")}
-        error={errors?.password?.message}
+        errors={state?.fieldErrors.password!}
       />
       <FormInput
         placeholder="새로운 비밀번호를 입력해주세요"
         type="password"
         {...register("newPassword")}
-        error={errors.newPassword?.message}
+        // @ts-ignore
+        errors={errors.newPassword?.message!}
       />
       <FormInput
         placeholder="새로운 비밀번호를 확인해주세요"
         icon="✔️"
         type="password"
         {...register("confirmNewPassword")}
-        error={errors.confirmNewPassword?.message}
+        // @ts-ignore
+        errors={errors.confirmNewPassword?.message}
       />
       <FormBtn text="Submit New Profile" />
     </form>

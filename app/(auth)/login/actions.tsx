@@ -29,6 +29,8 @@ const formSchema = z.object({
     .string()
     .min(10, "Password should be at least 10 characters long")
     .regex(passwordRegex, "Password should contain at least on number"),
+
+  username: z.string(),
 });
 
 export async function handleform(prevState: string, formData: FormData) {
@@ -36,6 +38,7 @@ export async function handleform(prevState: string, formData: FormData) {
     //username: formData.get("username"),
     email: formData.get("email"),
     password: formData.get("password"),
+    username: formData.get("username"),
   };
   const result = await formSchema.safeParseAsync(data);
   //console.log(result.success);
@@ -62,6 +65,7 @@ export async function handleform(prevState: string, formData: FormData) {
         fieldErrors: {
           password: ["Wrong Password!"],
           email: [],
+          username: [],
         },
       };
     }
