@@ -123,6 +123,7 @@ export default function FormEditProfile({ userInfo }: FormEditProfileProps) {
         type="text"
         required
         {...register("username")}
+        // @ts-ignore
         errors={state?.fieldErrors.username!}
       />
       <FormInput
