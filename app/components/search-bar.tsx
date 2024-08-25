@@ -16,18 +16,21 @@ export default function SearchBar() {
     setKeywordValue("");
   }, [params]);
   return (
-    <header className="bg-gray-950 text-gray-100 py-4 px-5 flex items-center justify-between">
+    <header className=" border-b-2 border-slate-400 text-gray-100 py-2 px-5 flex items-center justify-between">
       <div>
-        <form action={dispatch} className="flex flex-col gap-1.5 relative">
+        <form
+          action={dispatch}
+          className="flex flex-col gap-1.5 relative text-slate-600 "
+        >
           <button className="absolute top-1 left-1">
-            <MagnifyingGlassIcon className="size-5" />
+            <MagnifyingGlassIcon className="size-5 text-slate-500" />
           </button>
           <input
             name="keyword"
             value={keywordValue}
             onChange={(e) => setKeywordValue(e.currentTarget.value)}
             type="text"
-            placeholder="찾고 싶은 트윗이 있나요?"
+            placeholder="Anything to search?"
             className="pl-8 text-sm py-1 bg-transparent border-b-[1px] border-b-gray-100 outline-none placeholder:text-gray-400 focus:outline-dashed  active:bg-transparent"
           />
           {state?.fieldErrors.keyword && (

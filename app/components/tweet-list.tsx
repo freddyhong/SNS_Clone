@@ -20,7 +20,7 @@ interface ListTweetProps {
 
 export function ListTweet({ tweet, created_at, user, _count }: ListTweetProps) {
   return (
-    <div className="flex flex-col px-6 py-4 gap-2 rounded-xl ring-4 ring-rose-300 hover:bg-rose-200 transition">
+    <div className="flex flex-col px-6 py-3 gap-2 rounded-xl ring-4 ring-rose-300 hover:bg-rose-200 transition">
       <span className="text-lg font-medium text-slate-700">{tweet}</span>
       <div className="flex justify-between items-center">
         <span className="text-sm text-slate-400">

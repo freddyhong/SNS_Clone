@@ -3,7 +3,7 @@
 import React from "react";
 import { InitialTweet } from "../(contents)/search/actions";
 import { useEffect, useState } from "react";
-import TweetListItem from "../(contents)/profile/[username]/page";
+import TweetListItem from "./search-tweet-item";
 
 interface TweetListProps {
   initialTweets: InitialTweet;
@@ -21,7 +21,7 @@ export default function TweetSearchList({
     }
   }, [keyword]);
   return (
-    <div className="flex flex-col gap-5 w-full px-2">
+    <div className="w-full flex flex-col items-center min-h-screen px-5 pt-6 ">
       <ul className="w-full flex flex-col gap-5">
         {tweets.map((tweet) => (
           <TweetListItem key={tweet.id} {...tweet} />
