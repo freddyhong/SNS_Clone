@@ -2,7 +2,9 @@
 ## [Go To Website](https://sns-clone-beta.vercel.app/)
 ## 📷 Project Description
 This is a personal SNS Clone project I developed during the summer of 2024 to enhance my skills in Next.js, Prisma and TypeScript. <br>
-The UI is styled using **TailwindCSS**, Database with **Prisma**, Backend with **Typescript**, and the project is deployed on **Vercel**.
+Key features includes user authentication (login, account creation), tweet posting, commenting, and profile viewing.
+Built using **TypeScript** for the backend, **Prisma** for database management, and styled with **Tailwind CSS**.
+Deployed on **Vercel** for live hosting.
 
 <br>
 
